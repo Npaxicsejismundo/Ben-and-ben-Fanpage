@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Liwanag · An unofficial Ben&amp;Ben fan tribute</title>
+    <meta
+      name="description"
+      content="An unofficial fan tribute to Ben&amp;Ben, the Filipino folk-pop band: their story, the members, the records and the stages. Not affiliated with Ben&amp;Ben or Sony Music Philippines."
+    />
+    <meta name="theme-color" content="#F4ECD8" />
+    <meta property="og:title" content="Liwanag · An unofficial Ben&amp;Ben fan tribute" />
+    <meta property="og:description" content="Nine years of light. A fan-made tribute to Ben&amp;Ben." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script>
+      // Boot state, decided before first paint:
+      // js: JS is running. motion: no reduced-motion preference.
+      // intro + intro-hide: play the light-up intro (first visit this session, motion allowed).
+      ;(function () {
+        var d = document.documentElement
+        var reduce = false
+        var seen = false
+        try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches } catch (e) {}
+        try { seen = window.sessionStorage.getItem('liwanag:intro-seen') === '1' } catch (e) {}
+        // The intro only plays on the home page, and not when arriving at a section link.
+        var home = /^\/(index\.html)?$/.test(location.pathname) && !location.hash
+        d.classList.add('js')
+        if (!reduce) d.classList.add('motion')
+        if (!reduce && !seen && home) d.classList.add('intro', 'intro-hide')
+      })()
+    </script>
+    <link rel="preconnect" href="https://static.wixstatic.com" crossorigin />
+    <link rel="preconnect" href="https://i.scdn.co" crossorigin />
+    <link rel="dns-prefetch" href="https://image-cdn-ak.spotifycdn.com" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>
+      <p style="padding:2rem;font-family:sans-serif">
+        Liwanag is an unofficial Ben&amp;Ben fan tribute. Turn on JavaScript to see it, or visit
+        <a href="https://www.benandbenmusic.com/">benandbenmusic.com</a>.
+      </p>
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

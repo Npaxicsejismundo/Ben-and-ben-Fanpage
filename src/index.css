@@ -1,0 +1,593 @@
+@import 'tailwindcss';
+
+/* Pinned horizontal discography layout: desktop, motion allowed, and JS running. */
+@custom-variant pin {
+  @media (min-width: 64rem) and (prefers-reduced-motion: no-preference) {
+    html.js & {
+      @slot;
+    }
+  }
+}
+
+/*
+ * Metric-matched fallbacks: while the web fonts load, Georgia and Arial are
+ * scaled to Fraunces' and Instrument Sans' widths and line metrics, so the
+ * swap doesn't shift the layout (the hero wordmark is 280px+ tall).
+ * Ratios measured in the browser against the real fonts.
+ */
+@font-face {
+  font-family: 'Fraunces Fallback';
+  src: local('Georgia');
+  font-weight: 100 549;
+  size-adjust: 105.2%;
+  ascent-override: 93.1%;
+  descent-override: 24.7%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Fraunces Fallback';
+  src: local('Georgia Bold'), local('Georgia-Bold');
+  font-weight: 550 900;
+  size-adjust: 93%;
+  ascent-override: 105.4%;
+  descent-override: 28%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Fraunces Fallback';
+  src: local('Georgia Italic'), local('Georgia-Italic');
+  font-style: italic;
+  font-weight: 100 900;
+  size-adjust: 97.4%;
+  ascent-override: 100.6%;
+  descent-override: 26.7%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Instrument Fallback';
+  src: local('Arial'), local('ArialMT');
+  size-adjust: 104.2%;
+  ascent-override: 93.1%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+}
+
+@theme {
+  --font-display: 'Fraunces Variable', 'Fraunces Fallback', ui-serif, Georgia, serif;
+  --font-sans:
+    'Instrument Sans Variable', 'Instrument Fallback', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --color-ink: #231111;
+  --color-cocoa: #47382a;
+  --color-cream: #f4ece8;
+  --color-dawn: #f4ecd8;
+  --color-paper: #f7f1e3;
+  --color-kraft: #e6d6b4;
+  --color-gold: #e9b949;
+  --color-glow: #f2cf3a;
+  --color-night: #131b37;
+  --color-moon: #f2f0dc;
+  --color-stage: #231111;
+  --color-ember: #1a1210;
+  --color-light: #fff6e5;
+
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-in-out-expo: cubic-bezier(0.87, 0, 0.13, 1);
+}
+
+/* Fraunces at full softness: the rounded, "handmade" display voice. */
+@utility display {
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 100;
+  letter-spacing: -0.02em;
+}
+
+@utility kicker {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+@layer base {
+  html {
+    background: #f4ecd8;
+    color: var(--color-ink);
+    overflow-x: clip;
+    scrollbar-gutter: stable;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    overflow-x: clip;
+    font-family: var(--font-sans);
+    background: transparent;
+    min-height: 100%;
+  }
+
+  html.scroll-locked {
+    overflow: hidden;
+  }
+
+  ::selection {
+    background: #f2cf3a;
+    color: #231111;
+  }
+
+  :focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  a {
+    text-underline-offset: 0.2em;
+  }
+}
+
+/* ---------- Boot states (classes set by the inline script in index.html) ---------- */
+
+/* Without JS the sections carry their own colors; with JS a single fixed layer does. */
+html:not(.js) #top { background: #f4ecd8; }
+html:not(.js) #story { background: #e6d6b4; }
+html:not(.js) #members { background: #f7f1e3; }
+html:not(.js) #music { background: #efe4c8; }
+html:not(.js) #singles { background: #f4ecd8; }
+html:not(.js) #songs { background: #131b37; }
+html:not(.js) #achievements { background: #e9b949; }
+html:not(.js) #live { background: #231111; }
+html:not(.js) #liwanag { background: #f3c66b; }
+
+/* The intro loader exists in the markup but only shows when the boot script asks. */
+.loader {
+  display: none;
+}
+
+html.intro .loader {
+  display: block;
+}
+
+/* During the intro the hero wordmark glows above the loader's dark overlay. */
+html.intro .hero-content {
+  z-index: auto;
+}
+
+html.intro .hero-wordmark {
+  z-index: 130;
+}
+
+.hero-glow {
+  display: none;
+}
+
+html.intro .hero-glow {
+  display: block;
+}
+
+html.intro-hide .hero-fade,
+html.intro-hide .hero-collage {
+  visibility: hidden;
+}
+
+/* One-shot fade-ups (App.tsx adds .is-in as each enters the viewport). */
+html.motion [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 2rem, 0);
+  transition:
+    opacity 1s var(--ease-out-expo),
+    transform 1.1s var(--ease-out-expo);
+  transition-delay: var(--reveal-delay, 0s);
+}
+
+html.motion [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Split headlines wait out of sight until they are split and rise in. */
+html.motion [data-split]:not(.is-split) {
+  opacity: 0;
+}
+
+/*
+ * Below-the-fold sections skip style, layout and paint until they near the
+ * viewport. `auto` remembers each section's real size once it has rendered.
+ * (Nothing inside these sections may rely on position: fixed.)
+ */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--cis, 2000px);
+}
+
+/* ---------- Page chrome ---------- */
+
+.bg-layer {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: #f4ecd8;
+}
+
+/* Static film grain: grayscale noise at low opacity, so it reads on light and dark. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: 220px 220px;
+}
+
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 200;
+  transform: translateY(-200%);
+  background: #231111;
+  color: #fff6e5;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+/* Custom cursor (fine pointers only; toggled from JS). */
+html.has-custom-cursor,
+html.has-custom-cursor * {
+  cursor: none !important;
+}
+
+.cursor-ring-inner {
+  transition:
+    transform 0.5s var(--ease-out-expo),
+    background-color 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.cursor.is-active .cursor-ring-inner {
+  transform: scale(2.2);
+  background-color: rgb(255 246 229 / 0.12);
+}
+
+.cursor.has-label .cursor-ring-inner {
+  transform: scale(2.6);
+  background-color: #fff6e5;
+}
+
+.cursor.is-quiet .cursor-ring-inner {
+  transform: scale(0.3);
+  opacity: 0;
+}
+
+.cursor-label {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.cursor.has-label .cursor-label {
+  opacity: 1;
+}
+
+/* SplitText masks: a little room so descenders and accents aren't clipped. */
+.split-line {
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+/* ---------- Marquee ---------- */
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    width: auto;
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 0.5rem;
+  }
+
+  .marquee-track ul {
+    flex-wrap: wrap;
+    justify-content: center;
+    flex-shrink: 1;
+  }
+
+  .marquee-dup {
+    display: none !important;
+  }
+}
+
+/* ---------- Story journal pages ---------- */
+
+.paper-ruled {
+  background-image:
+    linear-gradient(to right, transparent 0 3.25rem, rgb(168 91 50 / 0.28) 3.25rem calc(3.25rem + 1px), transparent calc(3.25rem + 1px)),
+    repeating-linear-gradient(to bottom, transparent 0 31px, rgb(71 56 42 / 0.12) 31px 32px);
+}
+
+.tape {
+  position: absolute;
+  width: 5.5rem;
+  height: 1.6rem;
+  background: rgb(242 207 58 / 0.55);
+  box-shadow: 0 1px 2px rgb(35 17 17 / 0.12);
+}
+
+/* ---------- Member cards ---------- */
+
+.member-card {
+  --c: #d9a12b;
+  --ink: #231111;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.member-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--c);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.7s var(--ease-out-expo);
+}
+
+.member-card:hover::before,
+.member-card:focus-visible::before {
+  transform: scaleY(1);
+}
+
+.member-card .member-card-text {
+  transition: color 0.4s ease;
+}
+
+.member-card:hover .member-card-text,
+.member-card:focus-visible .member-card-text {
+  color: var(--ink);
+}
+
+/*
+ * Card -> profile page: the portrait (and name) morph between pages with
+ * cross-document view transitions. Browsers without support just navigate.
+ */
+@view-transition {
+  navigation: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+}
+
+::view-transition-group(*) {
+  animation-duration: 0.7s;
+  animation-timing-function: var(--ease-in-out-expo);
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.45s;
+}
+
+/* ---------- Discography ---------- */
+
+/*
+ * While pinned, only the era in the middle shows its text: the others fade out,
+ * so no text ever sits on the wrong background. Art and covers stay visible.
+ */
+.is-pinned .album-body {
+  transition:
+    opacity 0.6s ease,
+    transform 0.8s var(--ease-out-expo);
+}
+
+.is-pinned .album-panel:not(.is-current) .album-body {
+  opacity: 0;
+  transform: translate3d(0, 1rem, 0);
+}
+
+/*
+ * Kuwaderno's notebook pages (PageFlip.tsx). They exist only while pinned, where
+ * the scroll turns them; stacked, reduced-motion and no-JS layouts never see them.
+ * Each sheet turns around its left edge, with a front and a back face.
+ */
+.page-flip {
+  display: none;
+  /* Deep enough that a page swinging up toward the viewer doesn't balloon past the screen. */
+  perspective: 3600px;
+}
+
+.is-pinned .page-flip {
+  display: block;
+}
+
+/* A turned page falls to the left of its panel; content-visibility: auto (.cv-auto) would clip it there. */
+.is-pinned .album-panel:has(.page-flip) {
+  content-visibility: visible;
+}
+
+.page-sheet {
+  transform-origin: 0 50%;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.page-face {
+  backface-visibility: hidden;
+  box-shadow: inset -2px 0 0 rgb(46 34 25 / 0.12);
+}
+
+.page-back {
+  transform: rotateY(180deg);
+}
+
+/* ---------- Songs ---------- */
+
+.song-row-title {
+  transition:
+    transform 0.6s var(--ease-out-expo),
+    color 0.3s ease;
+}
+
+.song-row:hover .song-row-title,
+.song-row:focus-visible .song-row-title {
+  transform: translateX(0.75rem);
+  color: #e8c66a;
+}
+
+/* ---------- Live ---------- */
+
+.stage-item {
+  transition: opacity 0.6s ease;
+}
+
+.stage-item .stage-dot {
+  transition:
+    background-color 0.5s ease,
+    box-shadow 0.8s var(--ease-out-expo),
+    transform 0.8s var(--ease-out-expo);
+}
+
+.stage-item.is-lit .stage-dot {
+  background-color: #f2cf3a;
+  box-shadow: 0 0 0 6px rgb(242 207 58 / 0.18), 0 0 40px 10px rgb(242 207 58 / 0.45);
+  transform: scale(1.2);
+}
+
+.stage-item .stage-spot {
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.stage-item.is-lit .stage-spot {
+  opacity: 1;
+}
+
+/* ---------- Glow motifs ---------- */
+
+.glow-orb {
+  background: radial-gradient(circle, rgb(255 246 216 / 0.95) 0%, rgb(242 207 58 / 0.55) 30%, rgb(217 161 43 / 0) 70%);
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.75;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+
+/* Ambient: starts with the visitor's first interaction (lib/awake.ts adds html.awake). */
+html.awake .breathe {
+  animation: breathe 7s ease-in-out infinite;
+}
+
+/*
+ * The Traveller galaxy (Galaxy.tsx). Every animation here uses the individual
+ * rotate/translate/scale properties or opacity, so it runs on the compositor and
+ * stacks with the scroll-driven transforms GSAP sets on the same elements.
+ */
+html.awake .galaxy-spin {
+  animation: galaxy-spin 240s linear infinite;
+}
+
+@keyframes galaxy-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+.twinkle {
+  opacity: 0.8;
+}
+
+html.awake .twinkle {
+  animation: twinkle var(--twinkle) ease-in-out var(--delay) infinite;
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.2;
+    scale: 0.55;
+  }
+  50% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+.comet {
+  opacity: 0;
+}
+
+html.awake .comet {
+  animation: comet var(--every) linear var(--delay) infinite;
+}
+
+@keyframes comet {
+  0% {
+    translate: 0 0;
+    opacity: 0;
+  }
+  1.5% {
+    opacity: 1;
+  }
+  9% {
+    translate: var(--dx) var(--dy);
+    opacity: 0;
+  }
+  100% {
+    translate: var(--dx) var(--dy);
+    opacity: 0;
+  }
+}
+
+html.awake .nebula {
+  animation: nebula-drift 26s ease-in-out var(--delay) infinite alternate;
+}
+
+@keyframes nebula-drift {
+  to {
+    translate: 5% -4%;
+    scale: 1.1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

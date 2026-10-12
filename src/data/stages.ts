@@ -1,0 +1,70 @@
+import type { Stage } from './types'
+import { SOURCES as S } from './sources'
+
+export const stages: Stage[] = [
+  {
+    id: 'music-matters',
+    date: 'Sep 2017',
+    title: 'Music Matters Live',
+    place: 'Singapore',
+    detail: 'Announced alongside fellow Filipino acts, months after becoming a nine-piece.',
+    sources: [S.bandwagonMusicMatters2017],
+  },
+  {
+    id: 'north-america',
+    date: 'Oct 2022',
+    title: 'First North American tour',
+    place: 'Calgary, Edmonton, Vancouver, Toronto, Washington D.C., New York, San Francisco, Los Angeles',
+    detail: 'Their first U.S. and Canada tour. The California dates moved later in the month after U.S. visa delays.',
+    sources: [S.bandwagonNaTour2022, S.bandwagonNaReschedule2022],
+  },
+  {
+    id: 'clockenflap',
+    date: 'Mar 2023',
+    title: 'Clockenflap',
+    place: 'Hong Kong',
+    detail: 'On the same festival bill as Arctic Monkeys and Phoenix.',
+    sources: [S.rapplerClockenflap2022],
+  },
+  {
+    id: '1mx',
+    date: 'Jul–Oct 2023',
+    title: '1MX',
+    place: 'London (Jul 8), Toronto (Sep 10), Sydney (Oct 8)',
+    detail: 'Three 1MX festival stops during their 2023 “Could Be Something” world tour.',
+    sources: [S.bandwagonWorldTour2023, S.abscbn1mxToronto2023, S.tribune1mxSydney2023],
+  },
+  {
+    id: 'sheeran',
+    date: 'Mar 9, 2024',
+    title: 'Special guests, Ed Sheeran’s +–=÷× Tour',
+    place: 'SMDC Festival Grounds, Parañaque',
+    detail: 'Sheeran invited Paolo and Miguel onstage to sing “Maybe the Night” with him.',
+    sources: [S.abscbnSheeran2024, S.philstarSheeran2024],
+  },
+  {
+    id: 'moa',
+    date: 'Dec 14, 2024',
+    title: 'The Traveller Across Dimensions: their first arena concert',
+    place: 'SM Mall of Asia Arena, Pasay',
+    detail: 'Sold out, with the show built around the album’s 3D animation.',
+    sources: [S.interaksyonMoa2024],
+  },
+  {
+    id: 'saranggola',
+    date: 'Oct 2, 2026',
+    title: 'Saranggola: The Concert',
+    place: 'Smart Araneta Coliseum, Quezon City',
+    detail: 'Sold out, with more than 30 songs for nine years together. The final show of the nine-piece lineup.',
+    sources: [S.businessworldSaranggola2026, S.pepSaranggola2026, S.dzrhJam2026],
+  },
+  {
+    id: 'cebu',
+    date: 'Apr 10, 2027',
+    title: 'Saranggola: The Concert returns',
+    place: 'SM Seaside Cebu Arena, Cebu',
+    detail: 'Announced. Check the band’s official channels for tickets.',
+    upcoming: true,
+    sources: [S.businessworldSaranggola2026],
+  },
+]
