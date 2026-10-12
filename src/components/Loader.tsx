@@ -25,35 +25,32 @@ export function Loader({ onReveal, onDone }: LoaderProps) {
     () => {
       if (!document.documentElement.classList.contains('intro')) return
       const bulbs = gsap.utils.toArray<HTMLElement>('.loader-bulb')
-      const counter = { n: 0 }
       const t = gsap.timeline({ defaults: { ease: 'expo.out' }, onComplete: onDone })
+      // About 4.5 s in all: the lights come on one by one (the counter keeps
+      // step), all nine hold for a beat, then they gather and fill the room.
+      const STAGGER = 0.22
 
       bulbs.forEach((b, i) => {
         const c = members[i]?.color.hex ?? '#F2CF3A'
-        t.to(b, { backgroundColor: c, boxShadow: `0 0 22px 4px ${c}`, scale: 1.25, duration: 0.4 }, i * 0.07)
-      })
-      t.to(
-        counter,
-        {
-          n: 9,
-          duration: 0.6,
-          ease: 'none',
-          onUpdate: () => {
-            if (count.current) count.current.textContent = String(Math.round(counter.n)).padStart(2, '0')
+        t.to(b, { backgroundColor: c, boxShadow: `0 0 22px 4px ${c}`, scale: 1.25, duration: 0.6 }, i * STAGGER)
+        t.call(
+          () => {
+            if (count.current) count.current.textContent = String(i + 1).padStart(2, '0')
           },
-        },
-        0,
-      )
+          [],
+          i * STAGGER,
+        )
+      })
       // Gather into one light, then let it fill the room.
-      t.to(bulbs, { x: (i) => (4 - i) * 26, scale: 0.6, duration: 0.4, ease: 'expo.inOut' })
-      t.to('.loader-meta', { autoAlpha: 0, duration: 0.25 }, '<')
-      t.set('.loader-orb', { autoAlpha: 1 }, '-=0.1')
-      t.to(bulbs, { autoAlpha: 0, duration: 0.15 }, '<')
+      t.to(bulbs, { x: (i) => (4 - i) * 26, scale: 0.6, duration: 0.7, ease: 'expo.inOut' }, '+=0.35')
+      t.to('.loader-meta', { autoAlpha: 0, duration: 0.35 }, '<')
+      t.set('.loader-orb', { autoAlpha: 1 }, '-=0.15')
+      t.to(bulbs, { autoAlpha: 0, duration: 0.2 }, '<')
       t.call(onReveal, [], '<')
-      t.to('.loader-orb', { scale: 70, duration: 0.8, ease: 'expo.in' }, '<')
+      t.to('.loader-orb', { scale: 70, duration: 1.1, ease: 'expo.in' }, '<')
       // Opacity, not background-color: stays on the compositor instead of repainting the screen.
-      t.to('.loader-bg', { autoAlpha: 0, duration: 0.5, ease: 'power2.out' }, '-=0.45')
-      t.to('.loader-orb', { autoAlpha: 0, duration: 0.35, ease: 'power1.out' }, '-=0.25')
+      t.to('.loader-bg', { autoAlpha: 0, duration: 0.6, ease: 'power2.out' }, '-=0.55')
+      t.to('.loader-orb', { autoAlpha: 0, duration: 0.4, ease: 'power1.out' }, '-=0.3')
       tl.current = t
     },
     { scope: root },

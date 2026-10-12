@@ -85,8 +85,9 @@ page load. Add or remove a member in `src/data/members.ts` and the page is gener
 
 ## Motion and accessibility
 
-- **Intro**: nine lights switch on (one per member), gather into one, and the room fills with light around the
-  hero wordmark. It plays once per browser session. Any key, a click or "Skip intro" ends it.
+- **Intro** (about 4.5 s): nine lights switch on one by one (one per member), hold for a beat, gather into one,
+  and the room fills with light around the hero wordmark. It plays once per browser session. Any key, a click or
+  "Skip intro" ends it.
 - **Reduced motion** (`prefers-reduced-motion: reduce`):
   - No intro, no smooth scrolling, no pinning, no custom cursor.
   - The marquee is static.
@@ -113,7 +114,8 @@ Lighthouse 12 on the production build (`npm run preview`, run locally with Edge 
 | Member profile, desktop | 100 | 100 | 100 | 100 |
 
 Mobile metrics: FCP ~2.1 s, LCP ~2.4 s, TBT ~50 ms, CLS 0, Speed Index ~5 s. Speed Index is the weakest metric
-because the intro animates the first seconds by design.
+because the intro animates the first seconds by design. (These runs predate lengthening the intro to about 4.5 s,
+which can push Speed Index up a little.)
 
 How it gets there:
 
