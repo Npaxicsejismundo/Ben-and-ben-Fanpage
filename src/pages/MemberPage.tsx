@@ -110,7 +110,7 @@ export function MemberPage({ member: m }: { member: Member }) {
                     </span>
                     {row.swatch && (
                       <span className="mt-2 block max-w-md text-sm leading-relaxed text-cocoa">
-                        {m.color.origin} A fan-site design choice, not {m.name}’s own.
+                        {m.color.origin}
                       </span>
                     )}
                   </dd>
